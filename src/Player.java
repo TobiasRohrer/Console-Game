@@ -2,14 +2,15 @@ public class Player {
 
     private World world;
     private int level;
-    private double xp, health, attack, defence, speed;
+    private double xp, currentHealth, maxHealth, attack, defence, speed;
     private Item[] inventory;
     private int x,y;
 
     public Player(double health, double attack, double defence, double speed, World world){
         this.level = 1;
         this.xp = 0;
-        this.health = health;
+        this.maxHealth = health;
+        this.currentHealth = health;
         this.attack = attack;
         this.defence = defence;
         this.speed = speed;
@@ -17,8 +18,33 @@ public class Player {
         this.world = world;
     }
 
+    public String xpToString(){
+        return xp + "/" + getNeededXp(level);
+    }
+
+    public String healthToString(){
+        return currentHealth + "/" + maxHealth;
+    }
+
+    public String attackToString(){
+        return "" + attack;
+    }
+
+    public String defenceToString(){
+        return "" + defence;
+    }
+
+    public String speedToString(){
+        return "" + speed;
+    }
+
     public boolean attack(){
+        System.out.println("Not yet implemented");
         return false;   //to Implement
+    }
+
+    public int getNeededXp(int level){
+        return 10 + (level-1) * 5;
     }
 
     public boolean move(Directions direction){
@@ -93,8 +119,12 @@ public class Player {
         this.xp = xp;
     }
 
-    public void setHealth(double health) {
-        this.health = health;
+    public void setMaxHealth(double health) {
+        this.maxHealth = health;
+    }
+
+    public void setCurrentHealth(double currentHealth){
+        this.currentHealth = currentHealth;
     }
 
     public void setAttack(double attack) {
@@ -121,8 +151,12 @@ public class Player {
         return xp;
     }
 
-    public double getHealth() {
-        return health;
+    public double getMaxHealth() {
+        return maxHealth;
+    }
+
+    public double getCurrentHealth(){
+        return currentHealth;
     }
 
     public double getAttack() {
