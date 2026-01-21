@@ -1,3 +1,4 @@
+import java.util.Random;
 
 public class World {
 
@@ -24,14 +25,36 @@ public class World {
 
     public void spawnPlayer(Player player){
         if (isFieldEmpty(1, 1)){
-            setAField('O', 1, 1);
+            setAField(player.getUnitSymbol(), 1, 1);
             player.setX(1);
             player.setY(1);
         }
     }
+
+    public void spawnMob(Mob mob){
+        int x,y;
+        do {
+            x = getRandomXValue();
+            y = getRandomYValue();
+        } while (!isFieldEmpty(x, y));
+        setAField(mob.getUnitSymbol(), x, y);
+        mob.setX(x);
+        mob.setY(y);
+    }
+
+    private int getRandomXValue(){
+        Random random = new Random();
+        return random.nextInt(1, getWorld()[0].length-1);
+    }
+
+    private int getRandomYValue(){
+        Random random = new Random();
+        return random.nextInt(1,getWorld().length);
+    }
+
     public boolean customSpawnPlayer(Player player, int x, int y){
         if (isFieldEmpty(x, y)){
-            setAField('O', x, y);
+            setAField(player.getUnitSymbol(), x, y);
             return true;
         }
         return false;

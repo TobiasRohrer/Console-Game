@@ -1,3 +1,4 @@
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Game {
@@ -6,6 +7,7 @@ public class Game {
     private boolean isRunning;
     private Scanner scanner;
     private Player player;
+    private PriorityQueue<Mob> mobQueue = new PriorityQueue<>((mob1, mob2) -> Double.compare(mob2.getSpeed(),mob1.getSpeed()));
 
     public Game(){
         world = new World();
@@ -18,11 +20,13 @@ public class Game {
         int classChoice = readInt(0,4, classSelection());
         createPlayer(classChoice);
         if (isRunning) world.spawnPlayer(player);
+        spawnGoblin(2);
         while (isRunning){
             world.printWorld();
             System.out.println();
             menuSelection();
             System.out.println();
+            mobQueue.forEach(Mob::tick);
         }
     }
 
@@ -34,10 +38,10 @@ public class Game {
                 case 1 -> {
                     int moveChoice = readInt(1,4, moveMenu());
                     switch (moveChoice){
-                        case 1 -> validMove = player.move(Directions.UP);
-                        case 2 -> validMove = player.move(Directions.RIGHT);
-                        case 3 -> validMove = player.move(Directions.DOWN);
-                        case 4 -> validMove = player.move(Directions.LEFT);
+                        case 1 -> validMove = player.move(Direction.UP);
+                        case 2 -> validMove = player.move(Direction.RIGHT);
+                        case 3 -> validMove = player.move(Direction.DOWN);
+                        case 4 -> validMove = player.move(Direction.LEFT);
                     }
                 }
                 case 2 -> {
@@ -106,6 +110,14 @@ public class Game {
                 4: Attack
                 5: Exit Game
                 """;
+    }
+
+    public void spawnGoblin(int amount){
+        for (int i = 0; i < amount; i++){
+            Goblin goblin = new Goblin(world, 5);
+            mobQueue.add(goblin);
+            world.spawnMob(goblin);
+        }
     }
 
     public void createPlayer(int classChoice){
