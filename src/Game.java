@@ -141,9 +141,9 @@ public class Game {
 
     public void createPlayer(int classChoice){
         switch (classChoice){
-            case 1 -> player = new Player(10, 15, 10, 5, world);
-            case 2 -> player = new Player(15, 5, 15, 5, world);
-            case 3 -> player = new Player(10, 10, 5, 15, world);
+            case 1 -> player = new Player(50, 15, 10, 5, world);
+            case 2 -> player = new Player(80, 5, 15, 5, world);
+            case 3 -> player = new Player(50, 10, 5, 15, world);
             case 4 -> {
                 isRunning = false;
                 System.out.println(getExitMessage());

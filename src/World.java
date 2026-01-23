@@ -64,6 +64,11 @@ public class World {
         return getFieldValue(x, y) == ' ';
     }
 
+    public Unit getField(int x, int y){
+        if (isCoordinateInBounds(x,y)) return world[y][x];
+        return null;
+    }
+
     public char getFieldValue(int x, int y){
         if (isCoordinateInBounds(x,y)){
             if (world[y][x] != null){

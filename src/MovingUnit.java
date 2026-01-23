@@ -1,10 +1,10 @@
 public abstract class MovingUnit extends Unit{
 
-    protected int level;
-    protected double xp, currentHealth, maxHealth, attack, defence, speed;
+    protected int level, attack, defence, speed;
+    protected double xp, currentHealth, maxHealth;
     protected int x,y;
 
-    public MovingUnit(double health, double attack, double defence, double speed, World world){
+    public MovingUnit(double health, int attack, int defence, int speed, World world){
         super(world);
         this.level = 1;
         this.xp = 0;
@@ -131,15 +131,15 @@ public abstract class MovingUnit extends Unit{
         this.currentHealth = currentHealth;
     }
 
-    public void setAttack(double attack) {
+    public void setAttack(int attack) {
         this.attack = attack;
     }
 
-    public void setDefence(double defence) {
+    public void setDefence(int defence) {
         this.defence = defence;
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 
@@ -159,15 +159,15 @@ public abstract class MovingUnit extends Unit{
         return currentHealth;
     }
 
-    public double getAttack() {
+    public int getAttack() {
         return attack;
     }
 
-    public double getDefence() {
+    public int getDefence() {
         return defence;
     }
 
-    public double getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 }

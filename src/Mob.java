@@ -1,6 +1,6 @@
 public class Mob extends MovingUnit{
 
-    public Mob(double health, double attack, double defence, double speed, World world, int level){
+    public Mob(double health, int attack, int defence, int speed, World world, int level){
         super(health, attack, defence, speed, world);
         setLevel(level);
     }
@@ -8,6 +8,10 @@ public class Mob extends MovingUnit{
     public boolean attack(){
         System.out.println("Attack not implemented yet");
         return false; //To implement
+    }
+
+    public void fight(){
+        System.out.println("Fight not implemented yet");
     }
 
     public void tick(){
