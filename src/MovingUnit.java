@@ -1,12 +1,11 @@
-public abstract class MovingUnit {
+public abstract class MovingUnit extends Unit{
 
-    private World world;
-    private int level;
-    private double xp, currentHealth, maxHealth, attack, defence, speed;
-    private int x,y;
-    private char unitSymbol;
+    protected int level;
+    protected double xp, currentHealth, maxHealth, attack, defence, speed;
+    protected int x,y;
 
     public MovingUnit(double health, double attack, double defence, double speed, World world){
+        super(world);
         this.level = 1;
         this.xp = 0;
         this.maxHealth = health;
@@ -14,7 +13,6 @@ public abstract class MovingUnit {
         this.attack = attack;
         this.defence = defence;
         this.speed = speed;
-        this.world = world;
     }
 
     public abstract boolean attack();
@@ -22,15 +20,20 @@ public abstract class MovingUnit {
     public void levelUp(){
         setXp(getXp() - getNeededXp(getLevel()));
         setLevel(getLevel() + 1);
+        maxHealth++;
+        setCurrentHealth(getCurrentHealth() + 1);
+        attack++;
+        defence++;
+        speed++;
     }
 
     public boolean move(Direction direction){
         switch (direction){
             case UP -> {
                 if(world.isFieldEmpty(x, y-1)){
-                    world.setAField(' ', x,y);
+                    world.setAField(null, x,y);
                     y--;
-                    world.setAField(unitSymbol, x,y);
+                    world.setAField(this, x,y);
                     return true;
                 }else {
                     return false;
@@ -38,9 +41,9 @@ public abstract class MovingUnit {
             }
             case RIGHT -> {
                 if(world.isFieldEmpty(x+1, y)){
-                    world.setAField(' ', x,y);
+                    world.setAField(null, x,y);
                     x++;
-                    world.setAField(unitSymbol, x,y);
+                    world.setAField(this, x,y);
                     return true;
                 }else {
                     return false;
@@ -48,9 +51,9 @@ public abstract class MovingUnit {
             }
             case DOWN -> {
                 if(world.isFieldEmpty(x, y+1)){
-                    world.setAField(' ', x,y);
+                    world.setAField(null, x,y);
                     y++;
-                    world.setAField(unitSymbol, x,y);
+                    world.setAField(this, x,y);
                     return true;
                 }else {
                     return false;
@@ -58,9 +61,9 @@ public abstract class MovingUnit {
             }
             case LEFT -> {
                 if(world.isFieldEmpty(x-1, y)){
-                    world.setAField(' ', x,y);
+                    world.setAField(null, x,y);
                     x--;
-                    world.setAField(unitSymbol, x,y);
+                    world.setAField(this, x,y);
                     return true;
                 }else {
                     return false;
@@ -73,7 +76,7 @@ public abstract class MovingUnit {
     }
 
     public String xpToString(){
-        return xp + "/" + getNeededXp(level);
+        return xp + "/" + getNeededXp(getLevel());
     }
 
     public String healthToString(){
@@ -92,8 +95,8 @@ public abstract class MovingUnit {
         return "" + speed;
     }
 
-    public int getNeededXp(int level){
-        return 10 + (level-1) * 5;
+    public double getNeededXp(int level){
+        return 10 + ((level-1) * 5);
     }
 
     public int getX() {
@@ -166,21 +169,5 @@ public abstract class MovingUnit {
 
     public double getSpeed() {
         return speed;
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    public char getUnitSymbol() {
-        return unitSymbol;
-    }
-
-    public void setUnitSymbol(char unitSymbol) {
-        this.unitSymbol = unitSymbol;
     }
 }

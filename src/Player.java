@@ -12,6 +12,4 @@ public class Player extends MovingUnit{
         System.out.println("Not yet implemented");
         return false;   //to Implement
     }
-
-
 }

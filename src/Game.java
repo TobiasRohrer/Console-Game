@@ -22,8 +22,6 @@ public class Game {
         if (isRunning) world.spawnPlayer(player);
         spawnGoblin(2);
         while (isRunning){
-            world.printWorld();
-            System.out.println();
             menuSelection();
             System.out.println();
             mobQueue.forEach(Mob::tick);
@@ -31,9 +29,12 @@ public class Game {
     }
 
     public void menuSelection(){
-        int menuChoice = readInt(1,5, gameMenu());
-        boolean validMove = true;
+        boolean validMove;
         do {
+            world.printWorld();
+            System.out.println();
+            int menuChoice = readInt(1,5, gameMenu());
+            validMove = true;
             switch (menuChoice){
                 case 1 -> {
                     int moveChoice = readInt(1,4, moveMenu());
@@ -46,12 +47,26 @@ public class Game {
                 }
                 case 2 -> {
                     System.out.println(getStats());
+                    validMove = false;
                 }
                 case 3 -> {
                     System.out.println(getInventory());   //To implement
+                    validMove = false;
                 }
                 case 4 -> {
                     player.attack(); //To implement
+                    if (player.getNeededXp(player.getLevel()) <= player.getXp()){
+                        player.levelUp();
+                        switch (readInt(1,4,getLevelUpMessage())){
+                            case 1 -> {
+                                player.setMaxHealth(player.getMaxHealth() + 1);
+                                player.setCurrentHealth(player.getCurrentHealth() + 1);
+                            }
+                            case 2 -> player.setAttack(player.getAttack() + 1);
+                            case 3 -> player.setDefence(player.getDefence() + 1);
+                            case 4 -> player.setSpeed(player.getSpeed() + 1);
+                        }
+                    }
                 }
                 case 5 -> {
                     System.out.println(getExitMessage());
@@ -69,8 +84,12 @@ public class Game {
         return "Inventory not yet implemented";
     }
 
+    public String getLevelUpMessage(){
+        return "You leveled Up!\nChoose which Attribute you want to increase!\n\n" + "1. Health: " + player.getMaxHealth() + "\n2. Attack: " + player.attackToString() + "\n3. Defence: " + player.defenceToString() + "\n4. Speed: " + player.speedToString() + "\n";
+    }
+
     public String getStats(){
-        return "Player LvL " + player.getLevel() + "\n 1. XP: " + player.xpToString() + "\n 2. Health: " + player.healthToString() + "\n 3. Attack: " + player.attackToString() + "\n 4. Defence: " + player.defenceToString() + "\n 5. Speed: " + player.speedToString();
+        return "Player LvL " + player.getLevel() + "\n 1. XP: " + player.xpToString() + "\n 2. Health: " + player.healthToString() + "\n 3. Attack: " + player.attackToString() + "\n 4. Defence: " + player.defenceToString() + "\n 5. Speed: " + player.speedToString() + "\n";
     }
 
     public String startMessage(){

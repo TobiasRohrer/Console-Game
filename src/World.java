@@ -2,30 +2,30 @@ import java.util.Random;
 
 public class World {
 
-    private char[][] world;
+    private Unit[][] world;
 
     public World(){
-        world = new char[10][10];
+        world = new Unit[10][10];
         for (int i = 0; i < world[0].length; i++){
             for (int j = 0; j < world.length; j++){
                 if (i == 0 || i == world[0].length-1){
-                    world[i][j] = '#';
+                    world[i][j] = new Wall(this);
                 } else if (j == 0 || j == world.length-1) {
-                    world[i][j] = '#';
+                    world[i][j] = new Wall(this);
                 }else{
-                    world[i][j] = ' ';
+                    world[i][j] = null;
                 }
             }
         }
     }
 
-    public World(char[][] world){
+    public World(Unit[][] world){
         this.world = world;
     }
 
     public void spawnPlayer(Player player){
         if (isFieldEmpty(1, 1)){
-            setAField(player.getUnitSymbol(), 1, 1);
+            setAField(player, 1, 1);
             player.setX(1);
             player.setY(1);
         }
@@ -37,7 +37,7 @@ public class World {
             x = getRandomXValue();
             y = getRandomYValue();
         } while (!isFieldEmpty(x, y));
-        setAField(mob.getUnitSymbol(), x, y);
+        setAField(mob, x, y);
         mob.setX(x);
         mob.setY(y);
     }
@@ -54,7 +54,7 @@ public class World {
 
     public boolean customSpawnPlayer(Player player, int x, int y){
         if (isFieldEmpty(x, y)){
-            setAField(player.getUnitSymbol(), x, y);
+            setAField(player, x, y);
             return true;
         }
         return false;
@@ -65,7 +65,13 @@ public class World {
     }
 
     public char getFieldValue(int x, int y){
-        if (isCoordinateInBounds(x, y)) return world[y][x];
+        if (isCoordinateInBounds(x,y)){
+            if (world[y][x] != null){
+                return world[y][x].getUnitSymbol();
+            }else {
+                return ' ';
+            }
+        }
         return '/';
     }
 
@@ -75,24 +81,30 @@ public class World {
 
     public void printWorld(){
         System.out.println("Map:");
-        for (char[] height : world){
+        for (Unit[] height : world){
             String row = "";
-            for (char width : height){
-                row += width;
+            for (Unit width : height){
+                if (width != null){
+                    row += width.getUnitSymbol();
+                }else {
+                    row += ' ';
+                }
             }
             System.out.println(row);
         }
     }
 
-    public void setAField(char newField, int x, int y){
-        if (isCoordinateInBounds(x,y)) world[y][x] = newField;
+    public void setAField(MovingUnit movingUnit, int x, int y){
+        if (isCoordinateInBounds(x,y)){
+            world[y][x] = movingUnit;
+        }
     }
 
-    public char[][] getWorld() {
+    public Unit[][] getWorld() {
         return world;
     }
 
-    public void setWorld(char[][] world) {
+    public void setWorld(Unit[][] world) {
         this.world = world;
     }
 }
