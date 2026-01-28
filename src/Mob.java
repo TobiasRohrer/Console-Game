@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Mob extends MovingUnit{
 
     public Mob(double health, int attack, int defence, int speed, World world, int level){
@@ -6,18 +8,51 @@ public class Mob extends MovingUnit{
     }
 
     public boolean attack(){
-        System.out.println("Attack not implemented yet");
-        return false; //To implement
+        Unit[] surroundings = {world.getField(x+1,y), world.getField(x-1,y), world.getField(x,y+1), world.getField(x,y-1)};
+        Player player = null;
+        for (Unit unit : surroundings){
+            if (unit instanceof Player) player = (Player) unit;
+        }
+        System.out.println("You have been attacked!");
+        if (player != null){
+            return player.fight(this);
+        }
+        return false;
     }
 
-    public void fight(){
-        System.out.println("Fight not implemented yet");
+    private int dealDamage(Player player){
+        //Provisionary Formulas
+        int damageDealt;
+        if (playerDodged(player)) return -1;
+        if (attack > player.getDefence()){
+            damageDealt = attack - defence;
+        }else {
+            damageDealt = 1;
+        }
+        player.setCurrentHealth(player.getCurrentHealth() - damageDealt);
+        return damageDealt;
+    }
+
+    public void fight(Player player){
+        int damageDealt = dealDamage(player);
+        if (damageDealt == -1){
+            System.out.println("You dodged the enemy's attack!");
+            System.out.println();
+        } else if (damageDealt == 0) {
+            System.out.println("The enemy dealt you 0 damage!");
+            System.out.println("Your health is now: " + player.healthToString());
+            System.out.println();
+        }else {
+            System.out.println("The enemy dealt " + damageDealt + " damage!");
+            System.out.println("Your health is now: " + player.healthToString());
+            System.out.println();
+        }
     }
 
     public void tick(){
         //Check if Xp is higher than the threshold to level up
         if (getXp() >= getNeededXp(getLevel())) levelUp();
-        //Heal if Mob Health is lower than 80%
+
         if (getCurrentHealth() <= getMaxHealth() * 0.8){
             heal();
         } else if (isPlayerClose()) {
@@ -36,8 +71,16 @@ public class Mob extends MovingUnit{
     }
 
     public boolean isPlayerClose(){
-        //Returns whether the Player is UP,DOWN,LEFT or RIGHT of the mob
+        //Checks the fields directly next to the mob for the player (not diagonally)
         return getWorld().getFieldValue(getX() + 1, getY()) == 'O' || getWorld().getFieldValue(getX() + 1, getY() + 1) == 'O' || getWorld().getFieldValue(getX() - 1, getY()) == 'O' || getWorld().getFieldValue(getX() - 1, getY() - 1) == 'O';
+    }
+
+    private boolean playerDodged(Player player){
+        Random random = new Random();
+        if (player.getSpeed() >= speed){
+            return random.nextInt(speed*4) > player.getSpeed();
+        }
+        return false;
     }
 
     public void heal(){

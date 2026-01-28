@@ -3,6 +3,7 @@ import java.util.Random;
 public class World {
 
     private Unit[][] world;
+    private boolean bossKilled = false;
 
     public World(){
         world = new Unit[10][10];
@@ -111,5 +112,13 @@ public class World {
 
     public void setWorld(Unit[][] world) {
         this.world = world;
+    }
+
+    public boolean isBossKilled() {
+        return bossKilled;
+    }
+
+    public void setBossKilled(boolean bossKilled) {
+        this.bossKilled = bossKilled;
     }
 }

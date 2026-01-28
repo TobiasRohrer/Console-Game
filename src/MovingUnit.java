@@ -15,8 +15,6 @@ public abstract class MovingUnit extends Unit{
         this.speed = speed;
     }
 
-    public abstract boolean attack();
-
     public void levelUp(){
         setXp(getXp() - getNeededXp(getLevel()));
         setLevel(getLevel() + 1);

@@ -20,7 +20,7 @@ public class Game {
         int classChoice = readInt(0,4, classSelection());
         createPlayer(classChoice);
         if (isRunning) world.spawnPlayer(player);
-        spawnGoblin(2);
+        spawnGoblin(5);
         while (isRunning){
             menuSelection();
             System.out.println();
@@ -33,6 +33,18 @@ public class Game {
         do {
             world.printWorld();
             System.out.println();
+            if (player.getNeededXp(player.getLevel()) <= player.getXp()){
+                player.levelUp();
+                switch (readInt(1,4,getLevelUpMessage())){
+                    case 1 -> {
+                        player.setMaxHealth(player.getMaxHealth() + 1);
+                        player.setCurrentHealth(player.getCurrentHealth() + 1);
+                    }
+                    case 2 -> player.setAttack(player.getAttack() + 1);
+                    case 3 -> player.setDefence(player.getDefence() + 1);
+                    case 4 -> player.setSpeed(player.getSpeed() + 1);
+                }
+            }
             int menuChoice = readInt(1,5, gameMenu());
             validMove = true;
             switch (menuChoice){
@@ -54,19 +66,7 @@ public class Game {
                     validMove = false;
                 }
                 case 4 -> {
-                    player.attack(); //To implement
-                    if (player.getNeededXp(player.getLevel()) <= player.getXp()){
-                        player.levelUp();
-                        switch (readInt(1,4,getLevelUpMessage())){
-                            case 1 -> {
-                                player.setMaxHealth(player.getMaxHealth() + 1);
-                                player.setCurrentHealth(player.getCurrentHealth() + 1);
-                            }
-                            case 2 -> player.setAttack(player.getAttack() + 1);
-                            case 3 -> player.setDefence(player.getDefence() + 1);
-                            case 4 -> player.setSpeed(player.getSpeed() + 1);
-                        }
-                    }
+                    player.attack();
                 }
                 case 5 -> {
                     System.out.println(getExitMessage());
@@ -136,6 +136,14 @@ public class Game {
             Goblin goblin = new Goblin(world, 5);
             mobQueue.add(goblin);
             world.spawnMob(goblin);
+        }
+    }
+
+    public void spawnBossGoblin(int amount){
+        for (int i = 0; i < amount; i++){
+            BossGoblin bossGoblin = new BossGoblin(world, 10);
+            mobQueue.add(bossGoblin);
+            world.spawnMob(bossGoblin);
         }
     }
 
