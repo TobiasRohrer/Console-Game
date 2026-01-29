@@ -7,7 +7,7 @@ public class Mob extends MovingUnit{
         setLevel(level);
     }
 
-    public boolean attack(){
+    public MovingUnit attack(){
         Unit[] surroundings = {world.getField(x+1,y), world.getField(x-1,y), world.getField(x,y+1), world.getField(x,y-1)};
         Player player = null;
         for (Unit unit : surroundings){
@@ -17,7 +17,7 @@ public class Mob extends MovingUnit{
         if (player != null){
             return player.fight(this);
         }
-        return false;
+        return null;
     }
 
     private int dealDamage(Player player){

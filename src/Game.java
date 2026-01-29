@@ -1,4 +1,5 @@
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
@@ -10,7 +11,7 @@ public class Game {
     private PriorityQueue<Mob> mobQueue = new PriorityQueue<>((mob1, mob2) -> Double.compare(mob2.getSpeed(),mob1.getSpeed()));
 
     public Game(){
-        world = new World();
+        world = createRandomWorld();
         scanner = new Scanner(System.in);
         isRunning = true;
     }
@@ -21,6 +22,7 @@ public class Game {
         createPlayer(classChoice);
         if (isRunning) world.spawnPlayer(player);
         spawnGoblin(5);
+        spawnBossGoblin(1);
         while (isRunning){
             menuSelection();
             System.out.println();
@@ -45,7 +47,7 @@ public class Game {
                     case 4 -> player.setSpeed(player.getSpeed() + 1);
                 }
             }
-            int menuChoice = readInt(1,5, gameMenu());
+            int menuChoice = readInt(1,6, gameMenu());
             validMove = true;
             switch (menuChoice){
                 case 1 -> {
@@ -66,9 +68,27 @@ public class Game {
                     validMove = false;
                 }
                 case 4 -> {
-                    player.attack();
+                    MovingUnit fightOutcome = player.attack();
+                    if (fightOutcome instanceof Mob){
+                        removeMob((Mob) fightOutcome);
+                    } else if (fightOutcome instanceof Player) {
+                        System.out.println(gameOver());
+                        isRunning = false;
+                    }else {
+                        System.out.println("Something went wrong!");
+                    }
                 }
                 case 5 -> {
+                    if (world.isBossKilled()){
+                        System.out.println("Congrats you cleared this room!");
+                        System.out.println("You entered a new room!");
+                        exitAndCreateNewRoom();
+                    }else{
+                        System.out.println("You have not killed the Boss yet!");
+                        System.out.println("After killing the Boss you can use the Exit!");
+                    }
+                }
+                case 6 -> {
                     System.out.println(getExitMessage());
                     isRunning = false;
                 }
@@ -127,8 +147,34 @@ public class Game {
                 2: View Stats
                 3: Open inventory
                 4: Attack
-                5: Exit Game
+                5: Use the Exit
+                6: Exit Game
                 """;
+    }
+
+    public String gameOver(){
+        return """
+                You died!
+                Game over!
+                """;
+    }
+
+    public void exitAndCreateNewRoom(){
+        world = createRandomWorld();
+        player.setWorld(world);
+        mobQueue.clear();
+        Random random = new Random();
+        spawnGoblin(random.nextInt(5, world.getWorld().length/2));
+        spawnBossGoblin(1);
+        world.spawnPlayer(player);
+        player.giveXp(50);
+    }
+
+    public World createRandomWorld(){
+        Random random = new Random();
+        int width = random.nextInt(10,30);
+        int height = random.nextInt(10,30);
+        return new World(new Unit[height][width]);
     }
 
     public void spawnGoblin(int amount){
@@ -145,6 +191,11 @@ public class Game {
             mobQueue.add(bossGoblin);
             world.spawnMob(bossGoblin);
         }
+    }
+
+    public void removeMob(Mob mob){
+        mobQueue.remove(mob);
+        world.setAField(null, mob.x, mob.y);
     }
 
     public void createPlayer(int classChoice){

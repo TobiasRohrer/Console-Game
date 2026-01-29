@@ -7,21 +7,44 @@ public class World {
 
     public World(){
         world = new Unit[10][10];
-        for (int i = 0; i < world[0].length; i++){
-            for (int j = 0; j < world.length; j++){
-                if (i == 0 || i == world[0].length-1){
-                    world[i][j] = new Wall(this);
-                } else if (j == 0 || j == world.length-1) {
-                    world[i][j] = new Wall(this);
-                }else{
-                    world[i][j] = null;
-                }
-            }
-        }
+        initializeWalls();
     }
 
     public World(Unit[][] world){
         this.world = world;
+        initializeWalls();
+    }
+
+    private void initializeWalls(){
+        //Initializes all the walls of the world, i is representing the x-axis and j the y-axis
+        for (int i = 0; i < world[0].length; i++){
+            for (int j = 0; j < world.length; j++){
+                if (i == 0 || i == world[0].length -1){
+                    world[j][i] = new Wall(this);
+                }else if (j == 0 || j == world.length-1) {
+                    world[j][i] = new Wall(this);
+                }else{
+                    world[j][i] = null;
+                }
+            }
+        }
+        //Creates the exit at random coordinates in the wall
+        Random random = new Random();
+        int xOrY = random.nextInt(4);
+        switch (xOrY){
+            case 0 -> {
+                world[0][getRandomXValue()] = new Exit(this);
+            }
+            case 1 -> {
+                world[getRandomYValue()][world[0].length-1] = new Exit(this);
+            }
+            case 2 -> {
+                world[world.length-1][getRandomXValue()] = new Exit(this);
+            }
+            case 3 -> {
+                world[getRandomYValue()][0] = new Exit(this);
+            }
+        }
     }
 
     public void spawnPlayer(Player player){
@@ -100,9 +123,9 @@ public class World {
         }
     }
 
-    public void setAField(MovingUnit movingUnit, int x, int y){
+    public void setAField(Unit unit, int x, int y){
         if (isCoordinateInBounds(x,y)){
-            world[y][x] = movingUnit;
+            world[y][x] = unit;
         }
     }
 

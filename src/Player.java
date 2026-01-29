@@ -12,56 +12,59 @@ public class Player extends MovingUnit{
         setUnitSymbol('O');
     }
 
-    public boolean attack(){
+    public MovingUnit attack(){
         int attackDirection = readInt(1,5, attackMessage());
         switch (attackDirection){
             case 1 -> {
                 if (isHereAnEnemy(x,y-1)) return fight((Mob) world.getField(x,y+1));
                 System.out.println("You tried attacking Air!");
-                return false;
+                return null;
             }
             case 2 -> {
                 if (isHereAnEnemy(x+1,y)) return fight((Mob) world.getField(x+1,y));
                 System.out.println("You tried attacking Air!");
-                return false;
+                return null;
             }
             case 3 -> {
                 if (isHereAnEnemy(x,y+1)) return fight((Mob) world.getField(x,y-1));
                 System.out.println("You tried attacking Air!");
-                return false;
+                return null;
             }
             case 4 -> {
                 if (isHereAnEnemy(x-1,y)) return fight((Mob) world.getField(x-1,y));
                 System.out.println("You tried attacking Air!");
-                return false;
+                return null;
             }
             default -> {
-                return false;
+                return null;
             }
         }
     }
 
-    public boolean fight(Mob mob){
+    public MovingUnit fight(Mob mob){
         while(true){
             if (mob.getCurrentHealth() <= 0){
                 System.out.println("You killed the enemy!");
+                giveXp(mob.level * 5);
                 if (mob instanceof BossMob){
                     world.setBossKilled(true);
+                    giveXp(mob.level * 15);
                 }
-                return true;   // Drop Loot missing
+
+                return mob;   // Drop Loot missing
             }
             if (currentHealth <= 0){
                 System.out.println("You died to the enemy!");
-                return false;   //Death missing
+                return this;   //Death missing
             }
             if (speed >= mob.getSpeed()){
                 System.out.println("You are quicker so you attack first!");
-                if (!fightHelper(mob)) return false;
+                if (!fightHelper(mob)) return null;
                 if (mob.getCurrentHealth() > 0) mob.fight(this);
             }else {
                 System.out.println("The enemy is quicker so he attacks first!");
                 mob.fight(this);
-                if (!fightHelper(mob)) return false;
+                if (!fightHelper(mob)) return null;
             }
 
         }
@@ -115,6 +118,10 @@ public class Player extends MovingUnit{
         }
         mob.setCurrentHealth(mob.getCurrentHealth() - damageDealt);
         return damageDealt;
+    }
+
+    public void giveXp(int amount){
+        xp += amount;
     }
 
     private boolean tryToFlee(Mob mob){
