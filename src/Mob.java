@@ -2,6 +2,8 @@ import java.util.Random;
 
 public class Mob extends MovingUnit{
 
+    private boolean isDead = false;
+
     public Mob(double health, int attack, int defence, int speed, World world, int level){
         super(health, attack, defence, speed, world);
         setLevel(level);
@@ -15,7 +17,9 @@ public class Mob extends MovingUnit{
         }
         System.out.println("You have been attacked!");
         if (player != null){
-            return player.fight(this);
+            MovingUnit movingUnit = player.fight(this);
+            if (movingUnit == this) world.removeMob(this);
+            return movingUnit;
         }
         return null;
     }
@@ -56,7 +60,7 @@ public class Mob extends MovingUnit{
         if (getCurrentHealth() <= getMaxHealth() * 0.8){
             heal();
         } else if (isPlayerClose()) {
-            attack(); //To Implement
+            attack();
         }else{
             int walkCount = 0;
             //Loops until a random Direction is found that is empty
@@ -85,5 +89,13 @@ public class Mob extends MovingUnit{
 
     public void heal(){
         setCurrentHealth(getCurrentHealth() + getMaxHealth() * 0.2);
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
     }
 }

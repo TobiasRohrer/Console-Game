@@ -84,6 +84,10 @@ public class World {
         return false;
     }
 
+    public void removeMob(Mob mob){
+        setAField(null, mob.getX(), mob.getY());
+    }
+
     public boolean isFieldEmpty(int x, int y){
         return getFieldValue(x, y) == ' ';
     }

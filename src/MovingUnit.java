@@ -78,7 +78,7 @@ public abstract class MovingUnit extends Unit{
     }
 
     public String healthToString(){
-        return currentHealth + "/" + maxHealth;
+        return currentHealth >= 0 ? currentHealth + "/" + maxHealth : "0/" + maxHealth;
     }
 
     public String attackToString(){

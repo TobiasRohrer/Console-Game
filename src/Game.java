@@ -26,6 +26,7 @@ public class Game {
         while (isRunning){
             menuSelection();
             System.out.println();
+            removeDeadMobs();
             mobQueue.forEach(Mob::tick);
         }
     }
@@ -82,6 +83,8 @@ public class Game {
                     if (world.isBossKilled()){
                         System.out.println("Congrats you cleared this room!");
                         System.out.println("You entered a new room!");
+                        System.out.println("You healed yourself!");
+                        player.setCurrentHealth(player.getMaxHealth());
                         exitAndCreateNewRoom();
                     }else{
                         System.out.println("You have not killed the Boss yet!");
@@ -116,8 +119,18 @@ public class Game {
         return """
                Welcome to the Console Dungeon!
                Here you will move through the Dungeon rooms, fight monsters, level up and loot chests!
-               First you need to select a Class!
-               Just type in the number of a class to see an overview!
+               Just type in whatever number stands in front of the action you want to do.
+               
+               To attack a mob just walk next to it and use the attack action in the correct direction.
+               To level up, you need to kill enough mobs, or complete enough rooms to earn enough xp for the threshold.
+               To complete a room you need to first kill the boss mob marked with the 'B' on the map.
+               After the boss is slain, just walk next to the exit marked with '|' and use the exit room action in the menu.
+               After completing a room you get some xp and are moved to a new random room.
+               If you want to quit the game just use the exit feature in the menu.
+               Be aware though that saving your progress is not yet possible.
+               
+               First though, you need to select a Class!
+               Just type in the number of a class to select it!
                """;
     }
 
@@ -157,6 +170,10 @@ public class Game {
                 You died!
                 Game over!
                 """;
+    }
+
+    private void removeDeadMobs(){
+        mobQueue.removeIf(Mob::isDead);
     }
 
     public void exitAndCreateNewRoom(){

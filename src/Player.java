@@ -50,7 +50,7 @@ public class Player extends MovingUnit{
                     world.setBossKilled(true);
                     giveXp(mob.level * 15);
                 }
-
+                mob.setDead(true);
                 return mob;   // Drop Loot missing
             }
             if (currentHealth <= 0){
