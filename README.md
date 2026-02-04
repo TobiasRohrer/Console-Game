@@ -57,7 +57,7 @@ The game is controlled by entering numbers corresponding to the on-screen menu.
 | `0` | Player |
 | `G` | Goblin |
 | `B` | Boss |
-| `|` | Exit |
+| `\|` | Exit |
 
 ## Future Implementation
 
